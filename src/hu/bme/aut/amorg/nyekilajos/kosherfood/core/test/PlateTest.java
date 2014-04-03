@@ -2,9 +2,9 @@ package hu.bme.aut.amorg.nyekilajos.kosherfood.core.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.stub;
+import static org.mockito.Mockito.verify;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.R;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.activities.KosherSurfaceActivity;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Food;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.IsKosherAsync;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherDbObj;
@@ -26,6 +26,7 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
+import roboguice.activity.RoboActivity;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -34,7 +35,7 @@ import android.graphics.RectF;
 public class PlateTest {
 
 	private Plate plateUnderTest;
-	private KosherSurfaceActivity mockActivity;
+	private RoboActivity mockActivity;
 
 	@Mock
 	private Food mockFood1;
@@ -55,14 +56,12 @@ public class PlateTest {
 
 	@Mock
 	private NotKosherPairs mockNotKosherPairs;
-;
-	
+
 	@Mock
 	private FoodsDataSource mockFoodsDataSource;
 
 	@Mock
 	private NotKosherPairsDataSource mockNotKosherPairsDataSource;
-	
 
 	private static final int TEST_PLATE_ID = 1;
 	private static final float TEST_PLATE_INIT_X = 30;
@@ -78,8 +77,8 @@ public class PlateTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		mockActivity = Robolectric.buildActivity(KosherSurfaceActivity.class)
-				.create().visible().get();
+		mockActivity = Robolectric.buildActivity(RoboActivity.class).create()
+				.visible().get();
 
 		TestKosherFoodGuiceModule testModule = new TestKosherFoodGuiceModule();
 		testModule.addBinding(IsKosherAsync.class, mockIsKosherAsync);
@@ -218,7 +217,7 @@ public class PlateTest {
 	@Test
 	public void testSearchDatabaseForKosherPlate() {
 		int FOOD_ID_1 = 1;
-		String KOSHER_INFO = "KI";		
+		String KOSHER_INFO = "KI";
 
 		stub(mockFood1.getId()).toReturn(FOOD_ID_1);
 
@@ -250,8 +249,8 @@ public class PlateTest {
 		stub(mockFoods1.getIs_kosher()).toReturn(0);
 		stub(mockFoods1.getInformation()).toReturn(KOSHER_INFO);
 
-		stub(mockFoodsDataSource.getFood(FOOD_ID_1)).toReturn(mockFoods1);		
-		
+		stub(mockFoodsDataSource.getFood(FOOD_ID_1)).toReturn(mockFoods1);
+
 		plateUnderTest.addFoodToPlate(mockFood1);
 
 		KosherDbObj kosher = plateUnderTest.searchDatabase();
@@ -285,7 +284,7 @@ public class PlateTest {
 		stub(mockFoods3.get_id()).toReturn(FOOD_ID_3);
 		stub(mockFoods3.getIs_kosher()).toReturn(1);
 		stub(mockFoods3.getInformation()).toReturn(KOSHER_INFO3);
-		
+
 		stub(mockFoodsDataSource.getFood(FOOD_ID_1)).toReturn(mockFoods1);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_2)).toReturn(mockFoods2);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_3)).toReturn(mockFoods3);
@@ -298,7 +297,7 @@ public class PlateTest {
 
 		verify(mockFoodsDataSource).open();
 		verify(mockFoodsDataSource).close();
-		
+
 		assertEquals(true, kosher.isKosher);
 		assertEquals(KOSHER_INFO3, kosher.information);
 	}
@@ -325,7 +324,7 @@ public class PlateTest {
 		stub(mockFoods3.get_id()).toReturn(FOOD_ID_3);
 		stub(mockFoods3.getIs_kosher()).toReturn(1);
 		stub(mockFoods3.getInformation()).toReturn(KOSHER_INFO3);
-		
+
 		stub(mockFoodsDataSource.getFood(FOOD_ID_1)).toReturn(mockFoods1);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_2)).toReturn(mockFoods2);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_3)).toReturn(mockFoods3);
@@ -338,11 +337,11 @@ public class PlateTest {
 
 		verify(mockFoodsDataSource).open();
 		verify(mockFoodsDataSource).close();
-		
+
 		assertEquals(false, kosher.isKosher);
 		assertEquals(KOSHER_INFO2, kosher.information);
 	}
-	
+
 	@Test
 	public void testSearchDatabaseForKosherButNotTogetherPlate() {
 		int FOOD_ID_1 = 1;
@@ -366,18 +365,22 @@ public class PlateTest {
 		stub(mockFoods3.get_id()).toReturn(FOOD_ID_3);
 		stub(mockFoods3.getIs_kosher()).toReturn(1);
 		stub(mockFoods3.getInformation()).toReturn(KOSHER_INFO3);
-		
+
 		stub(mockNotKosherPairs.getFood_first_id()).toReturn(FOOD_ID_2);
 		stub(mockNotKosherPairs.getFood_first_id()).toReturn(FOOD_ID_3);
 		stub(mockNotKosherPairs.getInformation()).toReturn(KOSHER_INFO_NT);
-		
+
 		stub(mockFoodsDataSource.getFood(FOOD_ID_1)).toReturn(mockFoods1);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_2)).toReturn(mockFoods2);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_3)).toReturn(mockFoods3);
 
-		stub(mockNotKosherPairsDataSource.getNotKosherPairs(FOOD_ID_2, FOOD_ID_3)).toReturn(mockNotKosherPairs);
-		stub(mockNotKosherPairsDataSource.getNotKosherPairs(FOOD_ID_3, FOOD_ID_2)).toReturn(mockNotKosherPairs);
-		
+		stub(
+				mockNotKosherPairsDataSource.getNotKosherPairs(FOOD_ID_2,
+						FOOD_ID_3)).toReturn(mockNotKosherPairs);
+		stub(
+				mockNotKosherPairsDataSource.getNotKosherPairs(FOOD_ID_3,
+						FOOD_ID_2)).toReturn(mockNotKosherPairs);
+
 		plateUnderTest.addFoodToPlate(mockFood1);
 		plateUnderTest.addFoodToPlate(mockFood2);
 		plateUnderTest.addFoodToPlate(mockFood3);
@@ -386,10 +389,10 @@ public class PlateTest {
 
 		verify(mockFoodsDataSource).open();
 		verify(mockFoodsDataSource).close();
-		
+
 		verify(mockNotKosherPairsDataSource).open();
 		verify(mockNotKosherPairsDataSource).close();
-		
+
 		assertEquals(false, kosher.isKosher);
 		assertEquals(KOSHER_INFO_NT, kosher.information);
 	}
