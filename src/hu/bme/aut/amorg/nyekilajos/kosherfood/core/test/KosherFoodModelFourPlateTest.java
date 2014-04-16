@@ -9,6 +9,7 @@ import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherFoodModel;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherFoodModelFourPlate;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Plate;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.SurfaceSize;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.database.KosherDbHelper;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.test.TestKosherFoodGuiceModule;
 
 import java.util.ArrayList;
@@ -43,6 +44,9 @@ public class KosherFoodModelFourPlateTest {
 
 	@Mock
 	private SoundPool mockSoundPool;
+	
+	@Mock
+	private KosherDbHelper mockKosherDbHelper;
 
 	private RoboActivity mockActivity;
 
@@ -55,6 +59,7 @@ public class KosherFoodModelFourPlateTest {
 		TestKosherFoodGuiceModule testModule = new TestKosherFoodGuiceModule();
 		testModule.addBinding(SurfaceSize.class, mockSurfaceSize);
 		testModule.addBinding(SoundPool.class, mockSoundPool);
+		testModule.addBinding(KosherDbHelper.class, mockKosherDbHelper);
 		TestKosherFoodGuiceModule.setUp(this, testModule);
 
 		mockActivity = Robolectric.buildActivity(RoboActivity.class).create()
