@@ -1,6 +1,5 @@
 package hu.bme.aut.amorg.nyekilajos.kosherfood.core.test;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.InitGameAsync;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherController;
@@ -49,12 +48,6 @@ public class InitGameAsyncTest {
 	}
 
 	@Test
-	public void testOnPreExecure() throws Exception {
-		initGameAsyncUnderTest.onPreExecute();
-		verify(mockKosherFoodModel).setProgressDialog(anyString());
-	}
-
-	@Test
 	public void testCall() throws Exception {
 		initGameAsyncUnderTest.call();
 		verify(mockKosherFoodModel).initGame();
@@ -63,7 +56,6 @@ public class InitGameAsyncTest {
 	@Test
 	public void testOnFinally() {
 		initGameAsyncUnderTest.onFinally();
-		verify(mockKosherFoodModel).dismissProgressDialog();
 		verify(mockKosherController).startGame();
 	}
 

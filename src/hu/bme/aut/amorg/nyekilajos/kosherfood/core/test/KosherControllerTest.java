@@ -1,14 +1,16 @@
 package hu.bme.aut.amorg.nyekilajos.kosherfood.core.test;
 
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Food;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.GameThread;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherController;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherFoodModel;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Plate;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.ScheduledTasks;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.ScheduledTaskInit;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.ScheduledTaskInitFourPlate;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.ScheduledTaskNewPlate;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.ScheduledTaskRepaint;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.TaskScheduler;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.test.TestKosherFoodGuiceModule;
 
 import org.junit.After;
@@ -16,8 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.verification.VerificationModeFactory;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
@@ -33,13 +35,7 @@ public class KosherControllerTest {
 	private KosherFoodModel mockKosherFoodModel;
 
 	@Mock
-	private GameThread mockGameThread;
-
-	@Mock
 	private SurfaceHolder mockSurfaceHolder;
-
-	@Mock
-	private ScheduledTasks mockScheduledTasks;
 
 	@Mock
 	private View mockView;
@@ -53,6 +49,18 @@ public class KosherControllerTest {
 	@Mock
 	private Plate mockPlate;
 
+	@Mock
+	private TaskScheduler mockTaskScheduler;
+
+	@Mock
+	private ScheduledTaskInitFourPlate mockScheduledTaskInitFourPlate;
+
+	@Mock
+	private ScheduledTaskRepaint mockScheduledTaskRepaint;
+
+	@Mock
+	private ScheduledTaskNewPlate mockScheduledTaskNewPlate;
+
 	private RoboActivity mockActivity;
 
 	private KosherController kosherControllerUnderTest;
@@ -63,8 +71,13 @@ public class KosherControllerTest {
 
 		TestKosherFoodGuiceModule testModule = new TestKosherFoodGuiceModule();
 		testModule.addBinding(KosherFoodModel.class, mockKosherFoodModel);
-		testModule.addBinding(GameThread.class, mockGameThread);
-		testModule.addBinding(ScheduledTasks.class, mockScheduledTasks);
+		testModule.addBinding(TaskScheduler.class, mockTaskScheduler);
+		testModule.addBinding(ScheduledTaskRepaint.class,
+				mockScheduledTaskRepaint);
+		testModule.addBinding(ScheduledTaskNewPlate.class,
+				mockScheduledTaskNewPlate);
+		testModule.addBinding(ScheduledTaskInit.class,
+				mockScheduledTaskInitFourPlate);
 		TestKosherFoodGuiceModule.setUp(this, testModule);
 
 		mockActivity = Robolectric.buildActivity(RoboActivity.class).create()
@@ -76,21 +89,44 @@ public class KosherControllerTest {
 	@Test(expected = NullPointerException.class)
 	public void testStartGameWithoutHolder() {
 		kosherControllerUnderTest.startGame();
-		verify(mockGameThread).setHolder(mockSurfaceHolder);
+		verify(mockScheduledTaskRepaint, Mockito.never()).setHolder(
+				mockSurfaceHolder);
+		verify(mockScheduledTaskInitFourPlate, Mockito.never());
 	}
 
 	@Test
 	public void testStartGame() {
+		stub(mockScheduledTaskRepaint.setHolder(mockSurfaceHolder)).toReturn(
+				mockScheduledTaskRepaint);
 		kosherControllerUnderTest.setHolder(mockSurfaceHolder);
 		kosherControllerUnderTest.startGame();
-		verify(mockGameThread).setHolder(mockSurfaceHolder);
-		verify(mockGameThread).start();
-		verify(mockScheduledTasks, VerificationModeFactory.atLeast(4))
-				.setAction(anyInt());
+		verify(mockTaskScheduler).add(mockScheduledTaskRepaint);
+		verify(mockScheduledTaskRepaint).setHolder(mockSurfaceHolder);
+		verify(mockTaskScheduler).add(mockScheduledTaskInitFourPlate);
 	}
 
 	@Test
-	public void testOnTouch() {
+	public void testOnTouchForEmptyingPlate() {
+		float X = 300;
+		float Y = 400;
+
+		stub(mockEvent.getX()).toReturn(X);
+		stub(mockEvent.getY()).toReturn(Y);
+		stub(mockKosherFoodModel.selectTouchableFood(X, Y)).toReturn(null);
+		stub(mockKosherFoodModel.selectTouchablePlate(X, Y))
+				.toReturn(mockPlate);
+		stub(mockScheduledTaskNewPlate.setPlate(mockPlate)).toReturn(
+				mockScheduledTaskNewPlate);
+		
+		stub(mockEvent.getAction()).toReturn(MotionEvent.ACTION_DOWN);
+		kosherControllerUnderTest.onTouch(mockView, mockEvent);
+
+		verify(mockKosherFoodModel).RemoveFoodFromPlate(mockPlate);
+		verify(mockTaskScheduler).add(mockScheduledTaskNewPlate);
+	}
+	
+	@Test
+	public void testOnTouchForMovingPlate() {
 		float X = 300;
 		float Y = 400;
 
@@ -98,21 +134,36 @@ public class KosherControllerTest {
 		stub(mockEvent.getY()).toReturn(Y);
 		stub(mockKosherFoodModel.selectTouchableFood(X, Y)).toReturn(mockFood);
 		stub(mockKosherFoodModel.selectTouchablePlate(X, Y))
-				.toReturn(mockPlate);
-		stub(mockKosherFoodModel.selectPlate(mockFood)).toReturn(mockPlate);
+				.toReturn(null);
+		stub(mockKosherFoodModel.selectPlate(mockFood)).toReturn(null);
 
 		stub(mockEvent.getAction()).toReturn(MotionEvent.ACTION_DOWN);
 		kosherControllerUnderTest.onTouch(mockView, mockEvent);
-
-		verify(mockKosherFoodModel).RemoveFoodFromPlate(mockPlate);
-		verify(mockScheduledTasks).setAction(ScheduledTasks.ACTION_NEW_PLATE);
-		verify(mockPlate).initCoordinates();
 
 		stub(mockEvent.getAction()).toReturn(MotionEvent.ACTION_MOVE);
 		kosherControllerUnderTest.onTouch(mockView, mockEvent);
 
 		verify(mockFood).setX(X);
 		verify(mockFood).setY(Y);
+	}
+	
+	@Test
+	public void testOnTouchForPuttingFoodToPlate() {
+		float X = 300;
+		float Y = 400;
+
+		stub(mockEvent.getX()).toReturn(X);
+		stub(mockEvent.getY()).toReturn(Y);
+		stub(mockKosherFoodModel.selectTouchableFood(X, Y)).toReturn(mockFood);
+		stub(mockKosherFoodModel.selectTouchablePlate(X, Y))
+				.toReturn(null);
+		stub(mockKosherFoodModel.selectPlate(mockFood)).toReturn(mockPlate);
+
+		stub(mockEvent.getAction()).toReturn(MotionEvent.ACTION_DOWN);
+		kosherControllerUnderTest.onTouch(mockView, mockEvent);
+
+		stub(mockEvent.getAction()).toReturn(MotionEvent.ACTION_MOVE);
+		kosherControllerUnderTest.onTouch(mockView, mockEvent);
 
 		stub(mockEvent.getAction()).toReturn(MotionEvent.ACTION_UP);
 		kosherControllerUnderTest.onTouch(mockView, mockEvent);
@@ -137,15 +188,9 @@ public class KosherControllerTest {
 
 		kosherControllerUnderTest.destroyGame();
 
-		verify(mockGameThread).stopRunning();
-		try {
-			verify(mockGameThread).join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
 		verify(mockFood).freeResources();
 		verify(mockKosherFoodModel).destroyModel();
+		verify(mockTaskScheduler).shutDown();
 	}
 
 	@After

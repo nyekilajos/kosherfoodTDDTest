@@ -7,6 +7,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
+
+import java.io.IOException;
+
 import hu.bme.aut.amorg.nyekilajos.kosherfood.database.KosherDbHelper;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.database.NotKosherPairs;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.database.NotKosherPairsDataSource;
@@ -22,7 +25,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import roboguice.activity.RoboActivity;
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -60,31 +62,12 @@ public class NotKosherPairsDataSourceTest {
 	}
 
 	@Test
-	public void testInsert() {
-		stub(mockKosherDbHelper.getWritableDatabase()).toReturn(mockDatabase);
-		notKosherPairsDataSourceUnderTest.open();
-		notKosherPairsDataSourceUnderTest.insert(mockNotKosherPairs);
-
-		verify(mockDatabase).beginTransaction();
-		verify(mockDatabase).insert(eq(KosherDbHelper.NOT_KOSHER_PAIRS_TABLE),
-				anyString(), any(ContentValues.class));
-		verify(mockDatabase).setTransactionSuccessful();
-		verify(mockDatabase).endTransaction();
-	}
-
-	@Test
-	public void testDelete() {
-		stub(mockKosherDbHelper.getWritableDatabase()).toReturn(mockDatabase);
-		notKosherPairsDataSourceUnderTest.open();
-		notKosherPairsDataSourceUnderTest.delete(mockNotKosherPairs);
-
-		verify(mockDatabase).delete(eq(KosherDbHelper.NOT_KOSHER_PAIRS_TABLE),
-				anyString(), any(String[].class));
-	}
-
-	@Test
 	public void testGetNotKosherPairsWithResult() {
-		stub(mockKosherDbHelper.getWritableDatabase()).toReturn(mockDatabase);
+		try {
+			stub(mockKosherDbHelper.getDatabase()).toReturn(mockDatabase);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		stub(
 				mockDatabase.query(eq(KosherDbHelper.NOT_KOSHER_PAIRS_TABLE),
 						any(String[].class), anyString(), any(String[].class),
@@ -104,7 +87,11 @@ public class NotKosherPairsDataSourceTest {
 
 	@Test
 	public void testGetNotKosherPairsWithoutResult() {
-		stub(mockKosherDbHelper.getWritableDatabase()).toReturn(mockDatabase);
+		try {
+			stub(mockKosherDbHelper.getDatabase()).toReturn(mockDatabase);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		stub(
 				mockDatabase.query(eq(KosherDbHelper.NOT_KOSHER_PAIRS_TABLE),
 						any(String[].class), anyString(), any(String[].class),
@@ -117,18 +104,6 @@ public class NotKosherPairsDataSourceTest {
 
 		verify(mockCursor).close();
 		assertNull(notKosherPairsReturned);
-	}
-
-	@Test
-	public void testTruncate() {
-		stub(mockKosherDbHelper.getWritableDatabase()).toReturn(mockDatabase);
-		notKosherPairsDataSourceUnderTest.open();
-		notKosherPairsDataSourceUnderTest.truncateNotKosherPairs();
-
-		verify(mockDatabase).beginTransaction();
-		verify(mockDatabase).execSQL(anyString());
-		verify(mockDatabase).setTransactionSuccessful();
-		verify(mockDatabase).endTransaction();
 	}
 
 	@After
