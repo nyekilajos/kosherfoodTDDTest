@@ -191,6 +191,8 @@ public class PlateTest {
 		assertEquals("The plate should have been empty first time.", 0,
 				foodList.size());
 
+		stub(mockIsKosherAsync.setPlate(plateUnderTest)).toReturn(
+				mockIsKosherAsync);
 		plateUnderTest.addFoodToPlate(mockFood1);
 		plateUnderTest.addFoodToPlate(mockFood2);
 		foodList = plateUnderTest.removeFoodsFromPlate();
@@ -224,7 +226,8 @@ public class PlateTest {
 		stub(mockFoods1.get_id()).toReturn(FOOD_ID_1);
 		stub(mockFoods1.getIs_kosher()).toReturn(1);
 		stub(mockFoods1.getInformation()).toReturn(KOSHER_INFO);
-
+		stub(mockIsKosherAsync.setPlate(plateUnderTest)).toReturn(
+				mockIsKosherAsync);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_1)).toReturn(mockFoods1);
 
 		plateUnderTest.addFoodToPlate(mockFood1);
@@ -248,7 +251,8 @@ public class PlateTest {
 		stub(mockFoods1.get_id()).toReturn(FOOD_ID_1);
 		stub(mockFoods1.getIs_kosher()).toReturn(0);
 		stub(mockFoods1.getInformation()).toReturn(KOSHER_INFO);
-
+		stub(mockIsKosherAsync.setPlate(plateUnderTest)).toReturn(
+				mockIsKosherAsync);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_1)).toReturn(mockFoods1);
 
 		plateUnderTest.addFoodToPlate(mockFood1);
@@ -284,7 +288,8 @@ public class PlateTest {
 		stub(mockFoods3.get_id()).toReturn(FOOD_ID_3);
 		stub(mockFoods3.getIs_kosher()).toReturn(1);
 		stub(mockFoods3.getInformation()).toReturn(KOSHER_INFO3);
-
+		stub(mockIsKosherAsync.setPlate(plateUnderTest)).toReturn(
+				mockIsKosherAsync);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_1)).toReturn(mockFoods1);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_2)).toReturn(mockFoods2);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_3)).toReturn(mockFoods3);
@@ -324,7 +329,8 @@ public class PlateTest {
 		stub(mockFoods3.get_id()).toReturn(FOOD_ID_3);
 		stub(mockFoods3.getIs_kosher()).toReturn(1);
 		stub(mockFoods3.getInformation()).toReturn(KOSHER_INFO3);
-
+		stub(mockIsKosherAsync.setPlate(plateUnderTest)).toReturn(
+				mockIsKosherAsync);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_1)).toReturn(mockFoods1);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_2)).toReturn(mockFoods2);
 		stub(mockFoodsDataSource.getFood(FOOD_ID_3)).toReturn(mockFoods3);
@@ -365,7 +371,8 @@ public class PlateTest {
 		stub(mockFoods3.get_id()).toReturn(FOOD_ID_3);
 		stub(mockFoods3.getIs_kosher()).toReturn(1);
 		stub(mockFoods3.getInformation()).toReturn(KOSHER_INFO3);
-
+		stub(mockIsKosherAsync.setPlate(plateUnderTest)).toReturn(
+				mockIsKosherAsync);
 		stub(mockNotKosherPairs.getFood_first_id()).toReturn(FOOD_ID_2);
 		stub(mockNotKosherPairs.getFood_first_id()).toReturn(FOOD_ID_3);
 		stub(mockNotKosherPairs.getInformation()).toReturn(KOSHER_INFO_NT);
