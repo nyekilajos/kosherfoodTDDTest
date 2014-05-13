@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.R;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.activities.KosherSurfaceActivity;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Food;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.drawable.Food;
 
 import org.junit.After;
 import org.junit.Before;

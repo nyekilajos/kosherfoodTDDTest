@@ -2,10 +2,10 @@ package hu.bme.aut.amorg.nyekilajos.kosherfood.core.test;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.InitGameAsync;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherController;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherSurface;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.SurfaceSize;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.control.InitGameAsync;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.control.KosherController;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.test.TestKosherFoodGuiceModule;
 
 import org.junit.After;

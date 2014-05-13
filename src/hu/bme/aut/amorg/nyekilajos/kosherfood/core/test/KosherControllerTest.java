@@ -2,15 +2,15 @@ package hu.bme.aut.amorg.nyekilajos.kosherfood.core.test;
 
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Food;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherController;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherFoodModel;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Plate;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.ScheduledTaskInit;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.ScheduledTaskInitFourPlate;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.ScheduledTaskNewPlate;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.ScheduledTaskRepaint;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.TaskScheduler;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.control.KosherController;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.control.KosherFoodModel;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.drawable.Food;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.drawable.Plate;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.scheduled.ScheduledTaskInit;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.scheduled.ScheduledTaskInitFourPlate;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.scheduled.ScheduledTaskNewPlate;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.scheduled.ScheduledTaskRepaint;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.scheduled.TaskScheduler;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.test.TestKosherFoodGuiceModule;
 
 import org.junit.After;

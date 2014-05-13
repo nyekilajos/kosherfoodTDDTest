@@ -2,9 +2,9 @@ package hu.bme.aut.amorg.nyekilajos.kosherfood.core.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.IsKosherAsync;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherDbObj;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Plate;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.control.IsKosherAsync;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.drawable.Plate;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.test.TestKosherFoodGuiceModule;
 
 import org.junit.After;

@@ -1,6 +1,6 @@
 package hu.bme.aut.amorg.nyekilajos.kosherfood.test;
 
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherFoodGuiceModule;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.guice.KosherFoodGuiceModule;
 
 import java.util.HashMap;
 import java.util.Map.Entry;

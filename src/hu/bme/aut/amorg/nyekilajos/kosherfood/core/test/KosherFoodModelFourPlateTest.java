@@ -4,11 +4,11 @@ import static org.mockito.Matchers.anyFloat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Food;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherFoodModel;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.KosherFoodModelFourPlate;
-import hu.bme.aut.amorg.nyekilajos.kosherfood.core.Plate;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.core.SurfaceSize;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.control.KosherFoodModel;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.control.KosherFoodModelFourPlate;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.drawable.Food;
+import hu.bme.aut.amorg.nyekilajos.kosherfood.core.drawable.Plate;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.database.KosherDbHelper;
 import hu.bme.aut.amorg.nyekilajos.kosherfood.test.TestKosherFoodGuiceModule;
 
